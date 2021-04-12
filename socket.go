@@ -2,6 +2,7 @@ package wrapper
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -43,13 +44,11 @@ func New(token string, rooms []string, room string) (*Session, error) {
 }
 
 // Write writes a payload to the websocket
-func (s *Session) Write(toWrite interface{}) {
+func (s *Session) Write(toWrite interface{}) error {
 	s.SocketMutex.Lock()
 	err := s.Socket.WriteJSON(toWrite)
-	if err != nil && s.Log {
-		fmt.Println(err)
-	}
 	s.SocketMutex.Unlock()
+	return err
 }
 
 // Open opens the websocket connection and starts writing all the initiating payloads
@@ -57,12 +56,14 @@ func (s *Session) Open() error {
 	if c, _, err := websocket.DefaultDialer.Dial(SocketURL, s.Headers); err == nil {
 
 		s.Socket = c
-		s.Write(&Payload{
+		err = s.Write(&Payload{
 			Data: s.Rooms,
 			Room: "control",
 			Type: "join_rooms",
 		})
-
+		if err != nil && s.Log {
+			fmt.Println(err)
+		}
 		for {
 			_, message, err := c.ReadMessage()
 
@@ -494,4 +495,17 @@ func (s *Session) AddHandler(v interface{}) {
 	default:
 		fmt.Println("Unknown handler type, this handler will not be called")
 	}
+}
+
+// SwitchRoom takes in a room type, either "en", "tr", or "ru". This switches which chat room you're connected to
+func (s *Session) SwitchRoom(room string) error {
+	if room != "en" && room != "tr" && room != "ru" {
+		return errors.New("invalid room string")
+	}
+	err := s.Write(&Payload{
+		Room: "chat",
+		Type: "switch_room",
+		Data: "en",
+	})
+	return err
 }
