@@ -662,3 +662,30 @@ type ChatMessageData struct {
 	ID      string             `json:"id"`
 	Time    int                `json:"time"`
 }
+
+// AccountLeaderboard is the information about an account leaderboard
+type AccountLeaderboard struct {
+	Ranked   bool `json:"ranked"`
+	Tickets  int  `json:"tickets"`
+	Position int  `json:"position"`
+}
+
+// TicketsLeaderboard is the data for the current users in the tickets leaderboard
+type TicketsLeaderboard struct {
+	Success bool                     `json:"success"`
+	Result  TicketsLeaderboardResult `json:"result"`
+}
+
+// User represents a user in the ticket leaderboard
+type User struct {
+	ID       int    `json:"id"`
+	Username string `json:"username"`
+	Avatar   string `json:"avatar"`
+	Tickets  int    `json:"tickets"`
+}
+
+// TicketsLeaderboardResult contains data for the tickets leaderboard
+type TicketsLeaderboardResult struct {
+	Users   []User      `json:"leaderboard"`
+	Rewards interface{} `json:"rewards"`
+}
