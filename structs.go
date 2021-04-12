@@ -689,3 +689,15 @@ type TicketsLeaderboardResult struct {
 	Users   []User      `json:"leaderboard"`
 	Rewards interface{} `json:"rewards"`
 }
+
+// TotalWagered is the information for the total amount an account has wagered and won
+type TotalWagered struct {
+	Success bool               `json:"success"`
+	Result  TotalWageredResult `json:"result"`
+}
+
+// TotalWageredResult contains how much money an account has wagered and how much an account has won (this can be used to calculate total earnings)
+type TotalWageredResult struct {
+	Wagered int `json:"wagered"`
+	Won     int `json:"won"`
+}

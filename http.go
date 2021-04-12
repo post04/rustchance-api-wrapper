@@ -67,3 +67,37 @@ func (s *Session) GetLeaderboard() (*TicketsLeaderboardResult, error) {
 	}
 	return &r.Result, nil
 }
+
+// AccountEarnings is the func to get accounts earnings, it returns the amount of money put in and the amount of money won so you can calculate a profit amount. You **need** auth for this func, if auth isn't set it will give back an error
+func (s *Session) AccountEarnings() (*TotalWageredResult, error) {
+	if s.Auth == "" {
+		return nil, errors.New("no auth token set")
+	}
+	c := http.Client{}
+	req, err := http.NewRequest("GET", AccountEarningsURL, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("cookie", "token="+s.Auth)
+	resp, err := c.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return nil, errors.New("http request failed")
+	}
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	r := &TotalWagered{}
+	err = json.Unmarshal(b, &r)
+	if err != nil {
+		return nil, err
+	}
+	if !r.Success {
+		return nil, errors.New("success failed")
+	}
+	return &r.Result, nil
+}

@@ -7,4 +7,6 @@ const (
 	AccountLeaderboardURL = "https://rustchance.com/api/account/leaderboard"
 	// TicketsLeaderboardURL is the url for the tickets leaderboard data
 	TicketsLeaderboardURL = "https://rustchance.com/api/bonuses"
+	// AccountEarningsURL is the url to get the total account earning of an account
+	AccountEarningsURL = "https://rustchance.com/api/account/stats/all"
 )
