@@ -22,7 +22,7 @@ func New(token string, rooms []string, room string) (*Session, error) {
 	}
 	s.Headers = http.Header{}
 	for _, header := range headers {
-		parts := strings.Split(header, ":")
+		parts := strings.Split(header, ": ")
 		if len(parts) == 2 {
 			s.Headers[parts[0]] = []string{parts[1]}
 		}
@@ -77,7 +77,275 @@ func (s *Session) Open() error {
 				err = json.Unmarshal([]byte(msg), &m)
 				t := m.Room + "_" + m.Type
 				if f, ok := s.Handlers[t]; ok {
-					f(s, m)
+					switch t {
+					case "shop_rules":
+						p := &ShopRules{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "chat_rooms":
+						p := &ChatRooms{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "chat_message":
+						p := &ChatMessage{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "chat_stats":
+						p := &ChatStats{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "coinflip_delete_game":
+						p := &CoinflipDeleteGame{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "coinflip_game_status":
+						p := &CoinflipGameStatus{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "coinflip_list":
+						p := &CoinflipList{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "coinflip_new_game":
+						p := &CoinflipNewGame{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "coinflip_update_game":
+						p := &CoinflipUpdateGame{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "crash_cashout":
+						p := &CrashCashOut{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "crash_multiple_bets":
+						p := &CrashMultipleBets{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "crash_new":
+						p := &CrashNew{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "crash_start":
+						p := &CrashStart{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "crash_tick":
+						p := &CrashTick{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "jackpot_list":
+						p := &JackpotList{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "jackpot_new_deposit":
+						p := &JackpotNewDeposit{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "jackpot_new_game":
+						p := &JackpotNewGame{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "jackpot_start_timer":
+						p := &JackpotStartTimer{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "jackpot-low_list":
+						p := &LowJackpotList{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "jackpot-low_new_deposit":
+						p := &LowJackpotNewDeposit{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "jackpot-low_new_game":
+						p := &LowJackpotNewGame{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "jackpot-low_start_timer":
+						p := &LowJackpotStartTimer{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "mines_begin_timer":
+						p := &MinesBeginTimer{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "mines_game_started":
+						p := &MinesGameStarted{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "mines_game_starting":
+						p := &MinesGameStarting{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "mines_list":
+						p := &MinesList{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "mines_new_game":
+						p := &MinesNewGame{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "mines_new_player":
+						p := &MinesNewPlayer{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "mines_winner":
+						p := &MinesWinner{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "supply-drops_joinable":
+						p := &SupplyDropsJoinable{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "supply-drops_list":
+						p := &SupplyDropsList{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "supply-drops_players":
+						p := &SupplyDropsPlayers{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "supply-drops_result":
+						p := &SupplyDropWinner{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					default:
+						break
+
+					}
 				}
 			}
 
@@ -95,8 +363,13 @@ func (s *Session) AddHandler(v interface{}) {
 			a(s, v.(*ShopRules))
 		}
 	case func(*Session, *ChatRooms):
+		fmt.Println(v)
 		s.Handlers["chat_rooms"] = func(s *Session, v interface{}) {
 			a(s, v.(*ChatRooms))
+		}
+	case func(*Session, *ChatMessage):
+		s.Handlers["chat_message"] = func(s *Session, v interface{}) {
+			a(s, v.(*ChatMessage))
 		}
 	case func(*Session, *ChatStats):
 		s.Handlers["chat_stats"] = func(s *Session, v interface{}) {
