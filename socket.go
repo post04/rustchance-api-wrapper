@@ -16,6 +16,9 @@ import (
 // Room can either be "en", "tr", or "ru". If none is supplied it assumes "en"
 func New(token string, rooms []string, room string) (*Session, error) {
 	s := &Session{}
+	if token != "" {
+		s.Auth = token
+	}
 	headers := strings.Split("Host: rustchance.com\nPragma: no-cache\nCache-Control: no-cache\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36 OPR/73.0.3856.421\nOrigin: https://rustchance.com\nSec-WebSocket-Version: 13\nAccept-Encoding: gzip, deflate, br\nAccept-Language: en-US,en;q=0.9,zh;q=0.8\nSec-WebSocket-Extensions: permessage-deflate; client_max_window_bits", "\n")
 	if s.Auth != "" {
 		headers = append(headers, "Cookie: token:"+s.Auth)
