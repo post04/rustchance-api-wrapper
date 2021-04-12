@@ -12,14 +12,13 @@ import (
 
 // New returns a *Session and err
 // Token is your auth token, this can be left empty, you only need a token for account specific things
-// Rooms is a list of rooms to join, assumed to join all but you can set specific rooms
+// Rooms is a list of rooms to join, assumed to join all but you can set specific rooms. The current all known rooms is "chat", "crash", "shop", "coinflip", "jackpot", "jackpot-low", "supply-drops", "mines"
 // Room can either be "en", "tr", or "ru". If none is supplied it assumes "en"
 func New(token string, rooms []string, room string) (*Session, error) {
 	s := &Session{}
-	s.Token = token
 	headers := strings.Split("Host: rustchance.com\nPragma: no-cache\nCache-Control: no-cache\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36 OPR/73.0.3856.421\nOrigin: https://rustchance.com\nSec-WebSocket-Version: 13\nAccept-Encoding: gzip, deflate, br\nAccept-Language: en-US,en;q=0.9,zh;q=0.8\nSec-WebSocket-Extensions: permessage-deflate; client_max_window_bits", "\n")
-	if s.Token != "" {
-		headers = append(headers, "Cookie: "+s.Token)
+	if s.Auth != "" {
+		headers = append(headers, "Cookie: token:"+s.Auth)
 	}
 	s.Headers = http.Header{}
 	for _, header := range headers {
@@ -43,7 +42,9 @@ func New(token string, rooms []string, room string) (*Session, error) {
 	return s, nil
 }
 
-// Write writes a payload to the websocket
+// Write writes a payload to the websocket, this is usually only used by the package but can be used by a user directly.
+// toWrite should be a json payload unmarshal'd
+// returns an error incase writing fails
 func (s *Session) Write(toWrite interface{}) error {
 	s.SocketMutex.Lock()
 	err := s.Socket.WriteJSON(toWrite)
@@ -51,7 +52,7 @@ func (s *Session) Write(toWrite interface{}) error {
 	return err
 }
 
-// Open opens the websocket connection and starts writing all the initiating payloads
+// Open opens the websocket connection and writes the initial payload as well as starts reading from the socket.
 func (s *Session) Open() error {
 	if c, _, err := websocket.DefaultDialer.Dial(SocketURL, s.Headers); err == nil {
 
