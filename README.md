@@ -10,7 +10,7 @@ This package is an API wrapper for the popular rust skin gambling website [rustc
 
 # Disclaimer
 
-Rustchance can ban anyone but automization of account interactions on rustchance. It's against their TOS. Use this at your own **risk**. 
+Rustchance can ban anyone for automization of account interactions on rustchance. It's against their TOS. Use this at your own **risk**. 
 
 # Note
 
