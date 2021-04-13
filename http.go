@@ -97,7 +97,7 @@ func (s *Session) AccountEarnings() (*TotalWageredResult, error) {
 		return nil, err
 	}
 	if !r.Success {
-		return nil, errors.New("success failed")
+		return nil, errors.New("success was false")
 	}
 	return &r.Result, nil
 }
