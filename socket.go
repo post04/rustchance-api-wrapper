@@ -2,7 +2,6 @@ package wrapper
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -21,7 +20,7 @@ func New(token string, rooms []string, room string) (*Session, error) {
 	}
 	headers := strings.Split("Host: rustchance.com\nPragma: no-cache\nCache-Control: no-cache\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36 OPR/73.0.3856.421\nOrigin: https://rustchance.com\nSec-WebSocket-Version: 13\nAccept-Encoding: gzip, deflate, br\nAccept-Language: en-US,en;q=0.9,zh;q=0.8\nSec-WebSocket-Extensions: permessage-deflate; client_max_window_bits", "\n")
 	if s.Auth != "" {
-		headers = append(headers, "Cookie: token:"+s.Auth)
+		headers = append(headers, "Cookie: token="+s.Auth)
 	}
 	s.Headers = http.Header{}
 	for _, header := range headers {
@@ -347,6 +346,30 @@ func (s *Session) Open() error {
 							break
 						}
 						f(s, p)
+					case "roulette_roll":
+						p := &RouletteRoll{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "roulette_list":
+						p := &RouletteList{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
+					case "user_set_points":
+						p := &UserSetPoints{}
+						err = json.Unmarshal([]byte(msg), p)
+						if err != nil && s.Log {
+							fmt.Println(err)
+							break
+						}
+						f(s, p)
 					default:
 						break
 
@@ -368,7 +391,6 @@ func (s *Session) AddHandler(v interface{}) {
 			a(s, v.(*ShopRules))
 		}
 	case func(*Session, *ChatRooms):
-		fmt.Println(v)
 		s.Handlers["chat_rooms"] = func(s *Session, v interface{}) {
 			a(s, v.(*ChatRooms))
 		}
@@ -496,20 +518,74 @@ func (s *Session) AddHandler(v interface{}) {
 		s.Handlers["supply-drops_result"] = func(s *Session, v interface{}) {
 			a(s, v.(*SupplyDropWinner))
 		}
+	case func(*Session, *RouletteRoll):
+		s.Handlers["roulette_roll"] = func(s *Session, v interface{}) {
+			a(s, v.(*RouletteRoll))
+		}
+	case func(*Session, *RouletteList):
+		s.Handlers["roulette_list"] = func(s *Session, v interface{}) {
+			a(s, v.(*RouletteList))
+		}
+	case func(*Session, *UserSetPoints):
+		s.Handlers["user_set_points"] = func(s *Session, v interface{}) {
+			a(s, v.(*UserSetPoints))
+		}
 	default:
 		fmt.Println("Unknown handler type, this handler will not be called")
 	}
 }
 
-// SwitchRoom takes in a room type, either "en", "tr", or "ru". This switches which chat room you're connected to
-func (s *Session) SwitchRoom(room string) error {
+// SwitchRoom takes in a room type, then a type, then a data
+// Room can be for example "chat"
+// Type can be for example "switch_room"
+// Data can be anything, it's a type interface{}
+func (s *Session) SwitchRoom(room, t string, data interface{}) error {
+	err := s.Write(&Payload{
+		Room: room,
+		Type: t,
+		Data: data,
+	})
+	return err
+}
+
+// SwitchChatRoom takes in a room type of "en", "tr", or "ru"
+func (s *Session) SwitchChatRoom(room string) error {
 	if room != "en" && room != "tr" && room != "ru" {
-		return errors.New("invalid room string")
+		return fmt.Errorf("invalid room input")
 	}
 	err := s.Write(&Payload{
 		Room: "chat",
 		Type: "switch_room",
-		Data: "en",
+		Data: room,
 	})
 	return err
+}
+
+// BetRoulette takes in an amount, a game ID, and a color to bet on roulette
+// Amount is is US cents
+// GameID is the game id, get this from the RouletteRoll event in the "NewGame" field of "Data"
+// Color int can be 0 for blue, 1 for yellow, and 2 for red
+func (s *Session) BetRoulette(amount, gameID, color int) error {
+	if color < 0 || color > 2 {
+		return fmt.Errorf("color out of range 0-2")
+	}
+	err := s.Write(&Payload{
+		Room: "roulette",
+		Type: "join_game",
+		Data: &EnterRouletteData{
+			Amount: amount,
+			Color:  color,
+			ID:     gameID,
+		},
+	})
+	return err
+}
+
+// JoinSupplyDrop joins a supply drop
+func (s *Session) JoinSupplyDrop() error {
+	return s.Write(&Payload{
+		Room: "supply-drops",
+		Type: "join",
+		Data: nil,
+	})
 }

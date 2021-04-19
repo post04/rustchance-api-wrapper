@@ -701,3 +701,88 @@ type TotalWageredResult struct {
 	Wagered int `json:"wagered"`
 	Won     int `json:"won"`
 }
+
+// RouletteRoll contains information about the result of a reoulette game as well as the ID of the next game
+type RouletteRoll struct {
+	Room string           `json:"room"`
+	Type string           `json:"type"`
+	Data RouletteRollData `json:"data"`
+}
+
+// RouletteRollData contains information like the next game and the result of this game
+type RouletteRollData struct {
+	Game    int             `json:"game"`
+	NewGame RouletteNewGame `json:"newGame"`
+	Color   int             `json:"number"`
+	Stats   struct {
+		Blue int `json:"blue"`
+		Gold int `json:"gold"`
+		Red  int `json:"red"`
+	} `json:"statistics"`
+}
+
+// RouletteNewGame contains data about a new game of roulette
+type RouletteNewGame struct {
+	Black    []interface{} `json:"black"`
+	Green    []interface{} `json:"green"`
+	ID       int           `json:"id"`
+	Red      []interface{} `json:"red"`
+	RoundEnd int           `json:"roundEnd"`
+	State    int           `json:"state"`
+	Timer    int           `json:"timer"`
+}
+
+// EnterRouletteData contains data to enter a roulette game
+type EnterRouletteData struct {
+	Amount int `json:"amount"`
+	Color  int `json:"color"`
+	ID     int `json:"id"`
+}
+
+// RouletteList lists out the data for roulette games
+type RouletteList struct {
+	Room string `json:"room"`
+	Type string `json:"type"`
+	Data struct {
+		Current struct {
+			ID       int `json:"id"`
+			State    int `json:"state"`
+			RoundEnd int `json:"roundEnd"`
+			Timer    int `json:"timer"`
+			Blue     []struct {
+				ID     int    `json:"i"`
+				Player Player `json:"p"`
+				Bet    int    `json:"a"`
+			} `json:"black"`
+			Yellow []struct {
+				ID     int    `json:"i"`
+				Player Player `json:"p"`
+				Bet    int    `json:"a"`
+			} `json:"green"`
+			Red []struct {
+				ID     int    `json:"i"`
+				Player Player `json:"p"`
+				Bet    int    `json:"a"`
+			} `json:"red"`
+		} `json:"current"`
+		Settings struct {
+			Disabled bool `json:"disabled"`
+			MinValue int  `json:"minValue"`
+			MaxValue int  `json:"maxValue"`
+			GameTime int  `json:"gameTime"`
+		} `json:"settings"`
+		Statistics struct {
+			Blue int `json:"blue"`
+			Gold int `json:"gold"`
+			Red  int `json:"red"`
+		} `json:"statistics"`
+		History [][]int `json:"history"`
+	} `json:"data"`
+}
+
+// UserSetPoints updates the client on how much money the user has
+type UserSetPoints struct {
+	Room string `json:"room"`
+	Type string `json:"type"`
+	Data int    `json:"data"`
+}
