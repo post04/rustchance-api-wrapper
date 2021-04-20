@@ -786,3 +786,17 @@ type UserSetPoints struct {
 	Type string `json:"type"`
 	Data int    `json:"data"`
 }
+
+// AccountInfo is the information of an account
+type AccountInfo struct {
+	Auth       bool   `json:"auth"`
+	ID         int    `json:"id"`
+	SteamID    string `json:"steamid"`
+	Name       string `json:"name"`
+	AvatarURL  string `json:"avatar"`
+	TradeLink  string `json:"tradelink"`
+	Rank       int    `json:"rank"`
+	Experience int    `json:"experience"`
+	Balance    int    `json:"points"`
+	Frozen     bool   `json:"frozen"`
+}

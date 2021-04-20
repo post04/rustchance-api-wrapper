@@ -9,4 +9,6 @@ const (
 	TicketsLeaderboardURL = "https://rustchance.com/api/bonuses"
 	// AccountEarningsURL is the url to get the total account earning of an account
 	AccountEarningsURL = "https://rustchance.com/api/account/stats/all"
+	// AccountProfileURL is the url to get the account profile, right now we use this to get the json of user information
+	AccountProfileURL = "https://rustchance.com/profile"
 )

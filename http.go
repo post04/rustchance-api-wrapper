@@ -3,8 +3,10 @@ package wrapper
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
+	"regexp"
 	"strings"
 )
 
@@ -14,7 +16,13 @@ func (s *Session) MakeRequest(auth bool, method, URL string, body *strings.Reade
 		if s.Auth == "" {
 			return nil, errors.New("no auth token set")
 		}
-		req, err := http.NewRequest(method, URL, body)
+		var req *http.Request
+		var err error
+		if body == nil {
+			req, err = http.NewRequest(method, URL, nil)
+		} else {
+			req, err = http.NewRequest(method, URL, body)
+		}
 		if err != nil {
 			return nil, err
 		}
@@ -109,4 +117,43 @@ func (s *Session) AccountEarnings() (*TotalWageredResult, error) {
 		return nil, errors.New("success was false")
 	}
 	return &r.Result, nil
+}
+
+// AccountJSONRegex is the regex to pull the json out of the profile HTML
+var AccountJSONRegex = regexp.MustCompile(`window\.userData={.+}`)
+var getJSONCorrect = regexp.MustCompile(`[A-z]+:`)
+
+func formatJSON(s string) string {
+	final := s
+	matches := getJSONCorrect.FindAllString(s, -1)
+	for _, match := range matches {
+		if !strings.Contains(match, "http") {
+			final = strings.Replace(final, match, fmt.Sprintf("\"%s\":", strings.ReplaceAll(match, ":", "")), 1)
+		}
+	}
+	return final
+}
+
+// GetAccountInfo gets the general information of an account
+func (s *Session) GetAccountInfo() (*AccountInfo, error) {
+	req, err := s.MakeRequest(true, "GET", AccountProfileURL, nil)
+	if err != nil {
+		return nil, err
+	}
+	b, err := s.GetBody(req)
+	if err != nil {
+		return nil, err
+	}
+	matches := AccountJSONRegex.FindAllString(string(b), -1)
+	if len(matches) < 1 {
+		return nil, err
+	}
+	match := strings.ReplaceAll(matches[0], "window.userData=", "")
+	r := &AccountInfo{}
+	match = formatJSON(match)
+	err = json.Unmarshal([]byte(match), &r)
+	if err != nil {
+		return nil, err
+	}
+	return r, nil
 }
