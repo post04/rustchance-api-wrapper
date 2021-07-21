@@ -6,7 +6,7 @@ This package is an API wrapper for the popular rust skin gambling website [rustc
 
 - [ ] Search for more authorization required socket data
 - [ ] Search for more authorization required http/s endpoints
-- [ ] Add all /api/account/history/ API urls to the wrapper
+- [x] Add all /api/account/history/ API urls to the wrapper
 
 # Note
 
