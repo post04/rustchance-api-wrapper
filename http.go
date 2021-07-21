@@ -157,3 +157,30 @@ func (s *Session) GetAccountInfo() (*AccountInfo, error) {
 	}
 	return r, nil
 }
+
+// ClaimFaucet attempts to claim the free 3 cent faucet
+// CaptchaToken is an hcaptcha token, you'd need to use 2captcha or a similar service to get this CaptchaToken
+// Response is a *FaucetResponse, followed by an error
+func (s *Session) ClaimFaucet(CaptchaToken string) (*FaucetResponse, error) {
+	req, err := http.NewRequest("POST", "https://rustchance.com/api/account/faucet", strings.NewReader("response="+CaptchaToken))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("cookie", "token="+s.Auth)
+	req.Header.Set("content-type", "application/x-www-form-urlencoded; charset=UTF-8")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	r := &FaucetResponse{}
+	err = json.Unmarshal(b, &r)
+	if err != nil {
+		return nil, err
+	}
+	return r, nil
+}

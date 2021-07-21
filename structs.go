@@ -800,3 +800,10 @@ type AccountInfo struct {
 	Balance    int    `json:"points"`
 	Frozen     bool   `json:"frozen"`
 }
+
+// FaucetResponse is the response from attempting to claim the faucet
+type FaucetResponse struct {
+	Err         string `json:"error"`
+	AmountAdded int    `json:"result"`
+	Success     bool   `json:"success"`
+}
