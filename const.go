@@ -15,4 +15,6 @@ const (
 	FaucetClaimURL = "https://rustchance.com/api/account/faucet"
 	// ProvefairSerialURL is the url to check the validity of a "provably fair" action
 	ProvefairSerialURL = "https://rustchance.com/api/serial/"
+	// RedeemCodeURL is the url to redeem a sponsor code
+	RedeemCodeURL = "https://rustchance.com/api/affiliates/redeem"
 )

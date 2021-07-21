@@ -199,3 +199,30 @@ func (s *Session) CheckSerial(Serial string) (*ProvablyFair, error) {
 	}
 	return r, nil
 }
+
+// RedeemCode attempts to redeem a sponsored code on an account
+// Code is the sponsored code, for example, "CHANCE"
+// NOTE: I have no clue what a valid and successful response looks like...
+func (s *Session) RedeemCode(Code string) (*RedeemCodeResponse, error) {
+	req, err := http.NewRequest("POST", RedeemCodeURL, strings.NewReader("code="+Code))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("cookie", "token="+s.Auth)
+	req.Header.Set("content-type", "application/x-www-form-urlencoded; charset=UTF-8")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	r := &RedeemCodeResponse{}
+	err = json.Unmarshal(b, &r)
+	if err != nil {
+		return nil, err
+	}
+	return r, nil
+}

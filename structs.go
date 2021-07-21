@@ -824,3 +824,10 @@ type ProvablyFair struct {
 	} `json:"result"`
 	Success bool `json:"success"`
 }
+
+// RedeemCodeResponse is the response from attempting to redeem a sponsor code
+type RedeemCodeResponse struct {
+	Err     string `json:"error"`
+	Message string `json:"message"`
+	Success bool   `json:"success"`
+}
