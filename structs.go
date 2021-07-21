@@ -831,3 +831,83 @@ type RedeemCodeResponse struct {
 	Message string `json:"message"`
 	Success bool   `json:"success"`
 }
+
+// CoinflipHistory is the history for coinflip games
+type CoinflipHistory struct {
+	Result []struct {
+		BlueSide struct {
+			Avatar string `json:"avatar"`
+			ID     int    `json:"id"`
+			Name   string `json:"name"`
+		} `json:"blue_side"`
+		Diff    int     `json:"diff"`
+		Hash    string  `json:"hash"`
+		ID      int     `json:"id"`
+		Items   [][]int `json:"items"`
+		RedSide struct {
+			Avatar string `json:"avatar"`
+			ID     int    `json:"id"`
+			Name   string `json:"name"`
+		} `json:"red_side"`
+		Secret       string `json:"secret"`
+		Seed         string `json:"seed"`
+		SerialNumber int    `json:"serialNumber"`
+		TicketNumber int    `json:"ticketNumber"`
+		Time         int    `json:"time"`
+		Value        int    `json:"value"`
+		Winner       string `json:"winner"`
+	} `json:"result"`
+	Success bool `json:"success"`
+}
+
+// JackpotHistory is a list of previous jackpot games
+type JackpotHistory struct {
+	Result []struct {
+		Hash         string  `json:"hash"`
+		ID           int     `json:"id"`
+		Items        [][]int `json:"items"`
+		Secret       string  `json:"secret"`
+		Seed         string  `json:"seed"`
+		SerialNumber int     `json:"serialNumber"`
+		TicketNumber int     `json:"ticketNumber"`
+		Time         int     `json:"time"`
+		Value        int     `json:"value"`
+		Winner       struct {
+			Avatar string `json:"avatar"`
+			Chance string `json:"chance"`
+			ID     int    `json:"id"`
+			Name   string `json:"name"`
+		} `json:"winner"`
+	} `json:"result"`
+	Success bool `json:"success"`
+}
+
+// CrashGame is a response from the API for a crash game
+type CrashGame struct {
+	Result struct {
+		Bets []struct {
+			Amount    int       `json:"amount"`
+			CashedOut bool      `json:"cashedOut"`
+			CashoutAt float64   `json:"cashoutAt"`
+			CreatedAt time.Time `json:"createdAt"`
+			GameID    int       `json:"gameID"`
+			ID        int       `json:"id"`
+			Profile   struct {
+				Avatar   string `json:"avatar"`
+				Nickname string `json:"nickname"`
+				SteamID  string `json:"steamID"`
+			} `json:"profile"`
+			UpdatedAt time.Time `json:"updatedAt"`
+			UserID    int       `json:"userID"`
+		} `json:"bets"`
+		Game struct {
+			CrashedAt float64   `json:"crashedAt"`
+			CreatedAt time.Time `json:"createdAt"`
+			ID        int       `json:"id"`
+			Seed      int       `json:"seed"`
+			State     int       `json:"state"`
+			UpdatedAt time.Time `json:"updatedAt"`
+		} `json:"game"`
+	} `json:"result"`
+	Success bool `json:"success"`
+}

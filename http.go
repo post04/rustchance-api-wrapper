@@ -226,3 +226,50 @@ func (s *Session) RedeemCode(Code string) (*RedeemCodeResponse, error) {
 	}
 	return r, nil
 }
+
+// GetCoinflipHistory retreeves the previous coinflip games
+func (s *Session) GetCoinflipHistory() (*CoinflipHistory, error) {
+	resp, err := s.AllInOneHTTP(false, "GET", HistoryAPIURL+"coinflip", nil)
+	if err != nil {
+		return nil, err
+	}
+	r := &CoinflipHistory{}
+	err = json.Unmarshal(resp, &r)
+	if err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+// GetJackpotHistory retreeves the history of previous jackpot games
+// Room is either low or high depending on which room you want
+func (s *Session) GetJackpotHistory(Room string) (*JackpotHistory, error) {
+	if Room != "low" && Room != "high" {
+		return nil, errors.New("invalid room provided, must be high or low")
+	}
+	resp, err := s.AllInOneHTTP(false, "GET", HistoryAPIURL+"jackpot?room="+Room, nil)
+	if err != nil {
+		return nil, err
+	}
+	r := &JackpotHistory{}
+	err = json.Unmarshal(resp, &r)
+	if err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+// GetCrashGame gets a coinflip game by ID
+// ID is the ID of the coinflip game
+func (s *Session) GetCrashGame(ID string) (*CrashGame, error) {
+	resp, err := s.AllInOneHTTP(false, "GET", CrashGameURL+ID, nil)
+	if err != nil {
+		return nil, err
+	}
+	r := &CrashGame{}
+	err = json.Unmarshal(resp, &r)
+	if err != nil {
+		return nil, err
+	}
+	return r, nil
+}

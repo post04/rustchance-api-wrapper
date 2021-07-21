@@ -17,4 +17,8 @@ const (
 	ProvefairSerialURL = "https://rustchance.com/api/serial/"
 	// RedeemCodeURL is the url to redeem a sponsor code
 	RedeemCodeURL = "https://rustchance.com/api/affiliates/redeem"
+	// HistoryAPIURL is the url to fetch the history of various gamemodes
+	HistoryAPIURL = "https://rustchance.com/api/history/"
+	// CrashGameURL is the url to get information about a coinflip game
+	CrashGameURL = "https://rustchance.com/api/crash/game/"
 )
