@@ -818,7 +818,7 @@ type ProvablyFair struct {
 		HashedAPIKey string `json:"hashedApiKey"`
 		Hidden       bool   `json:"hidden"`
 		Number       int    `json:"number"`
-		RawMessage   string `json:"rawMessage"` // literally just the `result` but as a string?
+		RawMessage   string `json:"rawMessage"`
 		Seed         string `json:"seed"`
 		Signature    string `json:"signature"`
 	} `json:"result"`
