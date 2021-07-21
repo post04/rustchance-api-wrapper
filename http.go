@@ -162,7 +162,7 @@ func (s *Session) GetAccountInfo() (*AccountInfo, error) {
 // CaptchaToken is an hcaptcha token, you'd need to use 2captcha or a similar service to get this CaptchaToken
 // Response is a *FaucetResponse, followed by an error
 func (s *Session) ClaimFaucet(CaptchaToken string) (*FaucetResponse, error) {
-	req, err := http.NewRequest("POST", "https://rustchance.com/api/account/faucet", strings.NewReader("response="+CaptchaToken))
+	req, err := http.NewRequest("POST", FaucetClaimURL, strings.NewReader("response="+CaptchaToken))
 	if err != nil {
 		return nil, err
 	}
@@ -179,6 +179,21 @@ func (s *Session) ClaimFaucet(CaptchaToken string) (*FaucetResponse, error) {
 	}
 	r := &FaucetResponse{}
 	err = json.Unmarshal(b, &r)
+	if err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+// CheckSerial returns the "Provably fair" response from a URL like https://rustchance.com/provably-fair/serial?number=5465806
+// Serial with the example of that URL would be 5465806 aka the game number (not ID)
+func (s *Session) CheckSerial(Serial string) (*ProvablyFair, error) {
+	resp, err := s.AllInOneHTTP(false, "GET", ProvefairSerialURL+Serial, nil)
+	if err != nil {
+		return nil, err
+	}
+	r := &ProvablyFair{}
+	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return nil, err
 	}

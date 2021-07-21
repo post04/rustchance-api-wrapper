@@ -807,3 +807,20 @@ type FaucetResponse struct {
 	AmountAdded int    `json:"result"`
 	Success     bool   `json:"success"`
 }
+
+// ProvablyFair is the response from ProvefairSerialURL
+type ProvablyFair struct {
+	Err    string `json:"error"`
+	Result struct {
+		CreatedAt    string `json:"createdAt"`
+		Game         string `json:"game"`
+		GameID       string `json:"gameID"`
+		HashedAPIKey string `json:"hashedApiKey"`
+		Hidden       bool   `json:"hidden"`
+		Number       int    `json:"number"`
+		RawMessage   string `json:"rawMessage"` // literally just the `result` but as a string?
+		Seed         string `json:"seed"`
+		Signature    string `json:"signature"`
+	} `json:"result"`
+	Success bool `json:"success"`
+}
